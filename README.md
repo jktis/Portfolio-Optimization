@@ -1,6 +1,33 @@
 # Portfolio-Optimization
 
-Module to optimize portfolio allocation under proportional transaction costs:
+Module to optimize portfolio allocation under proportional transaction costs for a mean-variance utility function.
 
-<img src="https://render.githubusercontent.com/render/math?math=\begin{align} \max_{x^+,x^-}\; & x' \mu - k' (x^+ + x^-) - \gamma x' \mathbb V x/2 \\ \text{s.t.} & \nonumber \\ x^+,x^- & \geq 0 \\ x^+ - x^- + x_0 & = x \\ \mathbf 1'x & = 1  \end{align}">
+See notebook for details.
 
+# Dependencies
+- scipy
+- numpy
+- cvxopt
+- warnings 
+
+# Usage
+```python
+import numpy as np
+from PortfolioOptimization import OptP
+
+# simulate some data
+n = 10
+mu = np.sort(1 + np.random.rand(n))
+Q = np.random.uniform(-1,1,size=(n,n)) 
+V = Q.T@Q 
+V /= V[0,0]
+x0 = np.array([1/n]*n)
+k = np.random.rand(n)/10
+g = 5 # risk aversion parameter
+
+# optimize
+op = OptP(mu,k,V,g,x0)
+op.optimize_p(solver='qp')
+
+print(op.solution)
+```
